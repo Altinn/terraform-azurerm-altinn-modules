@@ -1,14 +1,14 @@
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "acaghr_vault" {
-  name                       = "${var.resource_prefix}acaghtvault"
+  name                       = "${var.resource_prefix}${random_string.name}acaghr"
   location                   = data.azurerm_resource_group.acaghr_rg.location
   resource_group_name        = data.azurerm_resource_group.acaghr_rg.name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   sku_name                   = "standard"
   soft_delete_retention_days = 7
   purge_protection_enabled   = false
-
+  tags = local.all_tags
 
 
   network_acls {

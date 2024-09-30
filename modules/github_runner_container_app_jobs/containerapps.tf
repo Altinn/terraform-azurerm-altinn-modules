@@ -1,17 +1,19 @@
 resource "azurerm_container_app_environment" "acaghr_env" {
-  name                       = "${var.resource_prefix}-acaghr-env"
+  name                       = "${var.resource_prefix}-${random_string.name}-acaghr"
   location                   = data.azurerm_resource_group.acaghr_rg.location
   resource_group_name        = data.azurerm_resource_group.acaghr_rg.name
   infrastructure_subnet_id   = var.infrastructure_subnet_id
+  tags = local.all_tags
 }
 
 
 resource "azurerm_container_app_job" "acaghr_app_job" {
-  name                         = "${var.resource_prefix}-acaghr-job"
+  name                         = "${var.resource_prefix}-${random_string.name}-acaghr"
   location                     = data.azurerm_resource_group.acaghr_rg.location
   resource_group_name          = data.azurerm_resource_group.acaghr_rg.name
   container_app_environment_id = azurerm_container_app_environment.acaghr_env.id
   replica_timeout_in_seconds   = 1800
+  tags = local.all_tags
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.acaghr_managed_identity.id]

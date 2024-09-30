@@ -22,6 +22,12 @@ variable "infrastructure_subnet_id" {
   description = "The subnet_id where the container app jobs are running. The Subnet must have a /21 or larger address space."
 }
 
+variable "additional_tags" {
+  type =map(string)
+  description = "Additional tags that should be added to all resources. Concated with the default tags"
+  default = {}
+}
+
 #######################################
 # Github tied variables               #
 #######################################
