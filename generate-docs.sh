@@ -27,18 +27,19 @@ if [[ "${ALL}" == "yes" ]]; then
     echo "Generationg docs for all submodules"
     for D in modules/*; do
         if [ -d "${D}" ]; then
-            pushd modules/${D}
+            echo "Generating for ${D}"
+            pushd ${D} > /dev/null
             cat base.md > README.md
 	        terraform-docs markdown --hide-empty table . >> README.md
-            popd
+            popd > /dev/null
         fi
     done
     exit 0
 elif [[ -n "$MODULE" ]]; then
     if [[ -d "modules/${MODULE}" ]]; then
-        pushd modules/${MODULE}
+        pushd modules/${MODULE} > /dev/null
         make generate-docs
-        popd
+        popd > /dev/null
     else
         echo "Module with name ${MODULE} not found in modules/ folder"
         exit 1

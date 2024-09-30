@@ -31,7 +31,7 @@ fi
 
 mkdir modules/${NAME}
 
-pushd modules/${NAME}
+pushd modules/${NAME} > /dev/null
 cat <<EOF >> Makefile
 .PHONY: generate-docs
 generate-docs:
@@ -41,8 +41,10 @@ EOF
 cat <<EOF >> base.md
 ## Example
 
-```
+\`\`\`
 TODO: Provide an example of how this modules can be used
-```
+\`\`\`
 EOF
-popd
+popd > /dev/null
+
+echo "Generated base files for new module ${NAME}"
