@@ -2,19 +2,29 @@
 # Azure resources specific variables  #
 #######################################
 variable "resource_group_name" {
-  type = string
+  type        = string
   description = "Name of the resource group that the resources should be placed in. Check for naming conflicts."
 }
 
 variable "resource_prefix" {
   type        = string
   description = "Prefix for resources"
+  validation {
+    condition     = length(var.resource_prefix) < 12 && var.resource_prefix == lower(var.resource_prefix)
+    error_message = "resource_prefix must be 11 chars or less and consist of only lower case alphanumerical characters."
+  }
 }
 
-variable "runner_ip" {
-  default     = ""
-  type        = string
-  description = "IP of the runner setting up the infrastructure. This needs to be granted before updates with terraform is executed, this is just to ensure that it will not always have a change in the infrastructure"
+variable "kv_ip_rules" {
+  default     = []
+  type        = set(string)
+  description = "IPs that will be allowed to access the KV holding the secrets needed by the environment"
+  validation {
+    condition = alltrue([
+      for ip in var.kv_ip_rules : can(regex("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", ip))
+    ])
+    error_message = "Invalid IP address provided in kv_ip_rules"
+  }
 }
 
 variable "infrastructure_subnet_id" {
@@ -23,9 +33,9 @@ variable "infrastructure_subnet_id" {
 }
 
 variable "additional_tags" {
-  type =map(string)
+  type        = map(string)
   description = "Additional tags that should be added to all resources. Concated with the default tags"
-  default = {}
+  default     = {}
 }
 
 #######################################
@@ -49,15 +59,12 @@ variable "install_id" {
   description = "Github Installation Id"
 }
 
-variable "owner" {
-  type        = string
-  default     = "Altinn"
-  description = "Github owner/organization to add the runner to"
-}
-
-variable "repo" {
-  type        = string
-  description = "Github repo to add the runner to"
+variable "repos" {
+  type = set(object({
+    owner = string
+    name  = string
+  }))
+  description = "Set of repos there should be created a job for running actiosn. Each owner/repo will get it's own azure container app job in the environsment"
 }
 
 #######################################
