@@ -17,12 +17,13 @@ These self hosted runners should only be used if strictly necessary as the might
 
 ## Contributing
 ### Add new submodule
-Run the make command: `SUBMODULE=<name-of-new-submodule> make add-new-submodule`
+Run the make script `add-new.sh` example `./add-new.sh --name new-example-submodule`
 
 ### Generate updated docs
 To update the docs:
 1. Install (terraform-docs)[https://terraform-docs.io/]
-2. Run `SUBMODULE=<name-of-submodule> make generate-docs` example: `SUBMODULE=github_runner_container_apps_job make generate-docs`
+2a. Update docs for all submodules run the script `generate-docs.sh` with the flag `--all`. Example: `./generate-docs.sh --all`
+2b. Update docs for one submodule run the script `generate-docs.sh` with the flag `--module <submodulename>`. Example: `./gnerate-docs.sh --module github_runner_container_apps_job` or change dir to the submodule and run `make generate-docs`
 
 Or
 1. Install (terraform-docs)[https://terraform-docs.io/]

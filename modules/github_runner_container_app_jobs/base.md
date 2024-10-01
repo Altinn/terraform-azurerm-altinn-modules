@@ -18,21 +18,28 @@ resource "azurerm_subnet" "example" {
   resource_group_name  = azurerm_resource_group.example.name
   virtual_network_name = azurerm_virtual_network.example.name
   address_prefixes     = ["10.0.1.0/21"]
-  service_endpoints = ["Microsoft.KeyVault"]
+  service_endpoints    = ["Microsoft.KeyVault"]
 }
 
 module "hello-modules_container-apps-gh-runners" {
-  source     = "Altinn/altinn-modules/azurerm//modules/github_runner_container_app_jobs"
-  version    = "0.0.1"
-  app_id     = "<appid>"
-  install_id = "<installid>"
-  app_key    = "<secret-app-key>"
-  owner      = "Altinn"
-  repo       = "terraform-azurerm-altinn-modules"
-  runner_ip  = <ip-of-machine-running-terraform>
-  resource_prefix= example
+  source                   = "Altinn/altinn-modules/azurerm//modules/github_runner_container_app_jobs"
+  version                  = "0.0.1" #See releases for latest version
+  app_id                   = "321321321"
+  install_id               = "123123123"
+  app_key                  = "PHNlY3JldC1hcHAta2V5Pgo="
+  repos                    = [
+    {
+      owner: "Altinn"
+      name: "terraform-azurerm-altinn-modules
+    },
+    {
+      owner: "Altinn"
+      name: "altinn-platform"
+    }
+  ]
+  resource_prefix          = example
   infrastructure_subnet_id = azurerm_subnet.example.id
-  resource_group_name = azurerm_resource_group.example.name
+  resource_group_name      = azurerm_resource_group.example.name
 }
 ```
 
