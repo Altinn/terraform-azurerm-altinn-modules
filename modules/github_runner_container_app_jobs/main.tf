@@ -1,10 +1,10 @@
 
 locals {
-  ip_rules = [for ip in var.var.kv_ip_rules : "${ip}/32"]
+  ip_rules = [for ip in var.kv_ip_rules : "${ip}/32"]
   default_tags = {
     module = "altinn/altinn-modules/altinn_github_runner_container_app_jobs"
   }
-  all_tags = concat(var.additional_tags, default_tags)
+  all_tags = merge(var.additional_tags, local.default_tags)
 }
 
 data "azurerm_resource_group" "acaghr_rg" {
@@ -14,4 +14,14 @@ data "azurerm_resource_group" "acaghr_rg" {
 resource "random_string" "name" {
   length  = 6
   special = false
+  upper   = false
+  numeric = false
+}
+
+resource "random_string" "job_name" {
+  for_each = { for index, repo in var.repos : "${repo.owner}/${repo.name}" => repo }
+  length   = 3
+  special  = false
+  upper    = false
+  numeric  = false
 }

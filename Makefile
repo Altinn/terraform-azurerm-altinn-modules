@@ -3,4 +3,4 @@ generate-docs:
 	./generate-docs.sh --all
 
 fmt:
-	./terraform.fmt.sh --all
+	./terraform-fmt.sh --all
