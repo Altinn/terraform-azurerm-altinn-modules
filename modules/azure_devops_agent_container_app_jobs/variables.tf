@@ -59,7 +59,7 @@ variable "azp_org_url" {
 
 variable "agent_image" {
   type        = string
-  default     = "ghcr.io/tjololo/container-apps-ci-cd-runner-tutorial:latest"
+  default     = "ghcr.io/altinn/altinn-platform/azure-devops-agent:1.0.0"
   description = "Docker image to run when a job is scheduled"
 }
 
@@ -77,7 +77,6 @@ variable "agent_memory" {
 
 variable "agent_pool_name" {
   type        = string
-  default     = "demo-azure-containers"
   description = "Name of the agent pool in azure devops"
 }
 
@@ -85,10 +84,4 @@ variable "agent_max_running_jobs" {
   type        = string
   default     = "20"
   description = "Maximum number of jobs to run at one time"
-}
-
-variable "runner_labels" {
-  default     = "default"
-  type        = string
-  description = "Additional labels to add to the runner"
 }
