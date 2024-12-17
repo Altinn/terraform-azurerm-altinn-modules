@@ -59,7 +59,7 @@ variable "azp_org_url" {
 
 variable "agent_image" {
   type        = string
-  default     = "ghcr.io/altinn/altinn-platform/azure-devops-agent:1.0.0"
+  default     = "ghcr.io/altinn/altinn-platform/azure-devops-agent:v1.0.0"
   description = "Docker image to run when a job is scheduled"
 }
 
