@@ -103,10 +103,6 @@ resource "azurerm_container_app_job" "agent" {
         name  = "AZP_POOL"
         value = var.agent_pool_name
       }
-      env {
-        name  = "LABELS"
-        value = var.runner_labels
-      }
     }
   }
 
