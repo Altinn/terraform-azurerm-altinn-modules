@@ -44,13 +44,13 @@ jobs:
           uses: golangci/golangci-lint-action@v6
           with:
             version: v1.59
-            working-directory: services/dis-apim-operator
+            working-directory: tests/${{ inputs.test_folder }}
 
         - name: Terraform Format Check module folder
           shell: bash
           working-directory: modules/${{ inputs.module_folder }}
           run: terraform fmt -check
-          
+
         - name: Terraform Format Check test folder
           shell: bash
           working-directory: tests/${{ inputs.test_folder }}
