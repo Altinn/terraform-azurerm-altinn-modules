@@ -1,0 +1,68 @@
+name: Reusable Execute Terratests
+
+on:
+    workflow_call:
+        secrets:
+            client_id:
+                description: 'Azure Client ID'
+                required: true
+            subscription_id:
+                description: 'Azure Subscription ID'
+                required: true
+            tenant_id:
+                description: 'Azure Tenant ID'
+                required: true
+        inputs:
+            module_folder:
+                description: 'Folder containing the module to test, relative to the modules directory'
+                required: true
+                type: string
+            test_folder:
+                description: 'Folder containing Terratests, relative to the tests directory'
+                required: true
+                type: string
+
+jobs:
+    run-terratests:
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Set up Go
+          uses: actions/setup-go@v5
+          with:
+            go-version-file: 'tests/go.mod'
+
+        - uses: hashicorp/setup-terraform@v3
+          with:
+            terraform_version: 1.10.3
+            terraform_wrapper: false 
+            
+        - name: Run linter
+          uses: golangci/golangci-lint-action@v6
+          with:
+            version: v1.59
+            working-directory: services/dis-apim-operator
+
+        - name: Terraform Format Check module folder
+          shell: bash
+          working-directory: modules/${{ inputs.module_folder }}
+          run: terraform fmt -check
+          
+        - name: Terraform Format Check test folder
+          shell: bash
+          working-directory: tests/${{ inputs.test_folder }}
+          run: terraform fmt -check
+
+        - name: Run Terratests
+          env:
+            ARM_CLIENT_ID: ${{ secrets.client_id }}
+            ARM_TENANT_ID: ${{ secrets.tenant_id }}
+            ARM_SUBSCRIPTION_ID: ${{ secrets.subscription_id }}
+            ARM_USE_OIDC: "true"
+            ALTINN_MODULES_TEST_ARM_SUBSCRIPTION_ID: ${{ secrets.subscription_id }}
+          run: |
+            cd tests/${{ inputs.test_folder }}
+            go test -v ./... -timeout 30m -count=1

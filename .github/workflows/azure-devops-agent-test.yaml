@@ -1,0 +1,32 @@
+name: Run Terratests
+
+on: 
+    push:
+        branches:
+        - main
+        paths:
+        - 'tests/go.mod'
+        - 'tests/go.sum'
+        - 'tests/azure_devops_agent_container_app_jobs/**'
+        - '.github/workflows/reusable-execute-submodule-tests.yaml'
+        - '.github/workflows/azure-devops-agent-test.yaml'
+    pull_request:
+        branches:
+        - main
+        paths:
+        - 'tests/go.mod'
+        - 'tests/go.sum'
+        - 'tests/azure_devops_agent_container_app_jobs/**'
+        - '.github/workflows/reusable-execute-submodule-tests.yaml'
+        - '.github/workflows/azure-devops-agent-test.yaml'
+
+jobs:
+    terratest:
+        uses: ./.github/workflows/reusable-execute-submodule-tests.yaml
+        with:
+            test_folder: 'azure_devops_agent_container_app_jobs'
+            module_folder: 'azure_devops_agent_container_app_jobs'
+        secrets:
+            client_id: ${{ secrets.AZURE_TERRATEST_CLIENT_ID }}
+            subscription_id: ${{ secrets.AZURE_TERRATEST_SUBSCRIPTION_ID }}
+            tenant_id: ${{ secrets.AZURE_TERRATEST_TENANT_ID }}
