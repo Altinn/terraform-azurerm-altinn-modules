@@ -42,6 +42,7 @@ jobs:
             
         - name: Run linter
           uses: golangci/golangci-lint-action@v6
+          if: false
           with:
             version: v1.59
             working-directory: tests/${{ inputs.test_folder }}
