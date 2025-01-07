@@ -56,13 +56,14 @@ jobs:
           shell: bash
           working-directory: tests/${{ inputs.test_folder }}
           run: terraform fmt -check
-
+        - name: Azure login
+          uses: azure/login@v2
+          with:
+            client-id: ${{ secrets.client_id }}
+            tenant-id: ${{ secrets.tenant_id }}
+            subscription-id: ${{ secrets.subscription_id }}
         - name: Run Terratests
           env:
-            ARM_CLIENT_ID: ${{ secrets.client_id }}
-            ARM_TENANT_ID: ${{ secrets.tenant_id }}
-            ARM_SUBSCRIPTION_ID: ${{ secrets.subscription_id }}
-            ARM_USE_OIDC: "true"
             ALTINN_MODULES_TEST_ARM_SUBSCRIPTION_ID: ${{ secrets.subscription_id }}
           run: |
             cd tests/${{ inputs.test_folder }}
