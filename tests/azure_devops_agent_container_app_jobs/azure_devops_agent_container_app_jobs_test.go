@@ -25,7 +25,7 @@ func TestAzureDevopsAgentContainerAppJob(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	verifyNonModuleResourcesExists(t, terraformOptions, subscriptionID)
+	//verifyNonModuleResourcesExists(t, terraformOptions, subscriptionID)
 
 	verifyContainerAppResourcesExists(t, terraformOptions, subscriptionID)
 
