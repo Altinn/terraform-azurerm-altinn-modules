@@ -57,10 +57,6 @@ variable "pat" {
   description = "Azure Devops PAT"
 }
 
-variable "subscription_id" {
-  type = string
-}
-
 terraform {
   required_providers {
     azurerm = {
@@ -75,7 +71,6 @@ terraform {
 }
 
 provider "azurerm" {
-  subscription_id = var.subscription_id
   features {}
 }
 

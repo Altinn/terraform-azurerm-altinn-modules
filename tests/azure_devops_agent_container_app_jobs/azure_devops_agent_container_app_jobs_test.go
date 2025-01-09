@@ -12,12 +12,11 @@ import (
 func TestAzureDevopsAgentContainerAppJob(t *testing.T) {
 	t.Parallel()
 
-	subscriptionID := env.GetString("ALTINN_MODULES_TEST_ARM_SUBSCRIPTION_ID", "fail")
+	subscriptionID := env.GetString("ARM_SUBSCRIPTION_ID", "fail")
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: ".",
 		Vars: map[string]interface{}{
-			"subscription_id": subscriptionID,
 			"pat":             "NotARealPat",
 		},
 	})
