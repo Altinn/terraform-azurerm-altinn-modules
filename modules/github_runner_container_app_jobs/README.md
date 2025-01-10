@@ -22,22 +22,22 @@ resource "azurerm_subnet" "example" {
 }
 
 module "hello-modules_container-apps-gh-runners" {
-  source                   = "Altinn/altinn-modules/azurerm//modules/github_runner_container_app_jobs"
-  version                  = "0.0.1" #See releases for latest version
-  app_id                   = "321321321"
-  install_id               = "123123123"
-  app_key                  = "PHNlY3JldC1hcHAta2V5Pgo="
-  repos                    = [
+  source     = "Altinn/altinn-modules/azurerm//modules/github_runner_container_app_jobs"
+  version    = "1.0.1" #See releases for latest version
+  app_id     = "321321321"
+  install_id = "123123123"
+  app_key    = "PHNlY3JldC1hcHAta2V5Pgo="
+  repos = [
     {
-      owner: "Altinn"
-      name: "terraform-azurerm-altinn-modules
+      owner = "Altinn"
+      name  = "terraform-azurerm-altinn-modules"
     },
     {
-      owner: "Altinn"
-      name: "altinn-platform"
+      owner = "Altinn"
+      name  = "altinn-platform"
     }
   ]
-  resource_prefix          = example
+  resource_prefix          = "example"
   infrastructure_subnet_id = azurerm_subnet.example.id
   resource_group_name      = azurerm_resource_group.example.name
 }
@@ -68,6 +68,7 @@ Resources will inherit location from resource group
 | [azurerm_key_vault.acaghr_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
 | [azurerm_key_vault_secret.acaghr_app_key](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_user_assigned_identity.acaghr_managed_identity](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
+| [random_string.job_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [random_string.name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_resource_group.acaghr_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
