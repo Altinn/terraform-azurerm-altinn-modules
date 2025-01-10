@@ -34,7 +34,7 @@ variable "infrastructure_subnet_id" {
 
 variable "additional_tags" {
   type        = map(string)
-  description = "Additional tags that should be added to all resources. Concated with the default tags"
+  description = "Additional tags that should be added to all resources. Concatenated with the default tags"
   default     = {}
 }
 
