@@ -11,18 +11,20 @@ on:
         paths:
         - 'tests/go.mod'
         - 'tests/go.sum'
-        - 'tests/azure_devops_agent_container_app_jobs/**'
+        - 'tests/github_runner_container_app_jobs/**'
+        - 'modules/github_runner_container_app_jobs/**'
         - '.github/workflows/reusable-execute-submodule-tests.yaml'
-        - '.github/workflows/azure-devops-agent-test.yaml'
+        - '.github/workflows/github-runner-test.yaml'
     pull_request:
         branches:
         - main
         paths:
         - 'tests/go.mod'
         - 'tests/go.sum'
-        - 'tests/azure_devops_agent_container_app_jobs/**'
+        - 'tests/github_runner_container_app_jobs/**'
+        - 'modules/github_runner_container_app_jobs/**'
         - '.github/workflows/reusable-execute-submodule-tests.yaml'
-        - '.github/workflows/azure-devops-agent-test.yaml'
+        - '.github/workflows/github-runner-test.yaml'
 
 jobs:
     terratest:
