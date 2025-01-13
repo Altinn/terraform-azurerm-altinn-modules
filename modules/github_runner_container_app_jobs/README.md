@@ -27,15 +27,10 @@ module "hello-modules_container-apps-gh-runners" {
   app_id     = "321321321"
   install_id = "123123123"
   app_key    = "PHNlY3JldC1hcHAta2V5Pgo="
+  owner = "Altinn"
   repos = [
-    {
-      owner = "Altinn"
-      name  = "terraform-azurerm-altinn-modules"
-    },
-    {
-      owner = "Altinn"
-      name  = "altinn-platform"
-    }
+    "terraform-azurerm-altinn-modules",
+    "altinn-platform"
   ]
   resource_prefix          = "example"
   infrastructure_subnet_id = azurerm_subnet.example.id
@@ -83,7 +78,8 @@ Resources will inherit location from resource group
 | <a name="input_infrastructure_subnet_id"></a> [infrastructure\_subnet\_id](#input\_infrastructure\_subnet\_id) | The subnet\_id where the container app jobs are running. The Subnet must have a /21 or larger address space. | `string` | n/a | yes |
 | <a name="input_install_id"></a> [install\_id](#input\_install\_id) | Github Installation Id | `string` | n/a | yes |
 | <a name="input_kv_ip_rules"></a> [kv\_ip\_rules](#input\_kv\_ip\_rules) | IPs that will be allowed to access the KV holding the secrets needed by the environment | `set(string)` | `[]` | no |
-| <a name="input_repos"></a> [repos](#input\_repos) | Set of repos there should be created a job for running actiosn. Each owner/repo will get it's own azure container app job in the environsment | <pre>set(object({<br/>    owner = string<br/>    name  = string<br/>  }))</pre> | n/a | yes |
+| <a name="input_owner"></a> [owner](#input\_owner) | Github owner or organization | `string` | n/a | yes |
+| <a name="input_repos"></a> [repos](#input\_repos) | Set of repos there should be created a job for running actiosn. Each owner/repo will get it's own azure container app job in the environsment | `set(string)` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of the resource group that the resources should be placed in. Check for naming conflicts. | `string` | n/a | yes |
 | <a name="input_resource_prefix"></a> [resource\_prefix](#input\_resource\_prefix) | Prefix for resources | `string` | n/a | yes |
 | <a name="input_runner_cpu"></a> [runner\_cpu](#input\_runner\_cpu) | CPU allocated to a runner | `string` | `"0.5"` | no |
@@ -91,3 +87,12 @@ Resources will inherit location from resource group
 | <a name="input_runner_labels"></a> [runner\_labels](#input\_runner\_labels) | Additional labels to add to the runner | `string` | `"default"` | no |
 | <a name="input_runner_max_running_jobs"></a> [runner\_max\_running\_jobs](#input\_runner\_max\_running\_jobs) | Maximum number of jobs to run at one time | `string` | `"20"` | no |
 | <a name="input_runner_memory"></a> [runner\_memory](#input\_runner\_memory) | Memory allocated to a runner | `string` | `"1Gi"` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_azurerm_container_app_environment_name"></a> [azurerm\_container\_app\_environment\_name](#output\_azurerm\_container\_app\_environment\_name) | n/a |
+| <a name="output_azurerm_container_app_runner_job_names"></a> [azurerm\_container\_app\_runner\_job\_names](#output\_azurerm\_container\_app\_runner\_job\_names) | n/a |
+| <a name="output_azurerm_key_vault_id"></a> [azurerm\_key\_vault\_id](#output\_azurerm\_key\_vault\_id) | n/a |
+| <a name="output_azurerm_key_vault_name"></a> [azurerm\_key\_vault\_name](#output\_azurerm\_key\_vault\_name) | n/a |

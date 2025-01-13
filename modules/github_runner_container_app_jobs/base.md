@@ -27,15 +27,10 @@ module "hello-modules_container-apps-gh-runners" {
   app_id     = "321321321"
   install_id = "123123123"
   app_key    = "PHNlY3JldC1hcHAta2V5Pgo="
+  owner = "Altinn"
   repos = [
-    {
-      owner = "Altinn"
-      name  = "terraform-azurerm-altinn-modules"
-    },
-    {
-      owner = "Altinn"
-      name  = "altinn-platform"
-    }
+    "terraform-azurerm-altinn-modules",
+    "altinn-platform"
   ]
   resource_prefix          = "example"
   infrastructure_subnet_id = azurerm_subnet.example.id

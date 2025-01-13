@@ -8,8 +8,8 @@ resource "azurerm_container_app_environment" "acaghr_env" {
 
 
 resource "azurerm_container_app_job" "acaghr_app_job" {
-  for_each                     = { for index, repo in var.repos : "${repo.owner}/${repo.name}" => repo }
-  name                         = "${var.resource_prefix}-${random_string.name.result}-${random_string.job_name[each.key].result}-acaghr"
+  for_each                     = var.repos
+  name                         = "${var.resource_prefix}-${random_string.name.result}-${random_string.job_name[each.value].result}-acaghr"
   location                     = data.azurerm_resource_group.acaghr_rg.location
   resource_group_name          = data.azurerm_resource_group.acaghr_rg.name
   container_app_environment_id = azurerm_container_app_environment.acaghr_env.id
@@ -40,11 +40,11 @@ resource "azurerm_container_app_job" "acaghr_app_job" {
       }
       env {
         name  = "ORG_NAME"
-        value = each.value.owner
+        value = var.owner
       }
       env {
         name  = "REPO_NAME"
-        value = each.value.name
+        value = each.value
       }
       env {
         name  = "LABELS"
@@ -67,8 +67,8 @@ resource "azurerm_container_app_job" "acaghr_app_job" {
           applicationID  = var.app_id
           installationID = var.install_id
           githubAPIURL   = "https://api.github.com"
-          owner          = each.value.owner
-          repos          = each.value.name
+          owner          = var.owner
+          repos          = each.value
           runnerScope    = "repo"
           labels         = var.runner_labels
         }

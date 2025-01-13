@@ -19,7 +19,7 @@ resource "random_string" "name" {
 }
 
 resource "random_string" "job_name" {
-  for_each = { for index, repo in var.repos : "${repo.owner}/${repo.name}" => repo }
+  for_each = var.repos
   length   = 3
   special  = false
   upper    = false
