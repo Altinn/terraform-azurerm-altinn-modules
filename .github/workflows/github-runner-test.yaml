@@ -1,0 +1,38 @@
+name: Run Terratests
+
+permissions:
+    id-token: write
+    contents: read
+
+on: 
+    push:
+        branches:
+        - main
+        paths:
+        - 'tests/go.mod'
+        - 'tests/go.sum'
+        - 'tests/github_runner_container_app_jobs/**'
+        - 'modules/github_runner_container_app_jobs/**'
+        - '.github/workflows/reusable-execute-submodule-tests.yaml'
+        - '.github/workflows/github-runner-test.yaml'
+    pull_request:
+        branches:
+        - main
+        paths:
+        - 'tests/go.mod'
+        - 'tests/go.sum'
+        - 'tests/github_runner_container_app_jobs/**'
+        - 'modules/github_runner_container_app_jobs/**'
+        - '.github/workflows/reusable-execute-submodule-tests.yaml'
+        - '.github/workflows/github-runner-test.yaml'
+
+jobs:
+    terratest:
+        uses: ./.github/workflows/reusable-execute-submodule-tests.yaml
+        with:
+            test_folder: 'github_runner_container_app_jobs'
+            module_folder: 'github_runner_container_app_jobs'
+        secrets:
+            client_id: ${{ secrets.AZURE_TERRATEST_CLIENT_ID }}
+            subscription_id: ${{ secrets.AZURE_TERRATEST_SUBSCRIPTION_ID }}
+            tenant_id: ${{ secrets.AZURE_TERRATEST_TENANT_ID }}

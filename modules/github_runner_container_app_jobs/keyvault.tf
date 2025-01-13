@@ -1,7 +1,7 @@
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "acaghr_vault" {
-  name                       = "${var.resource_prefix}${random_string.name}acaghr"
+  name                       = "${var.resource_prefix}${random_string.name.result}acaghr"
   location                   = data.azurerm_resource_group.acaghr_rg.location
   resource_group_name        = data.azurerm_resource_group.acaghr_rg.name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
@@ -15,7 +15,7 @@ resource "azurerm_key_vault" "acaghr_vault" {
     bypass         = "None"
     default_action = "Deny"
     virtual_network_subnet_ids = [
-      azurerm_subnet.acaghr_subnet.id
+      var.infrastructure_subnet_id
     ]
     ip_rules = local.ip_rules
   }
