@@ -34,10 +34,6 @@ func verifyContainerAppResourcesExists(t *testing.T, terraformOptions *terraform
 	environmnetName := terraform.Output(t, terraformOptions, "environment_name")
 	var runnerJobNames map[string]string
 	terraform.OutputStruct(t, terraformOptions, "runner_job_names", &runnerJobNames)
-	t.Log("Runner Job Names:")
-	for k, runnerJobName := range runnerJobNames {
-		t.Logf("%s: %s", k, runnerJobName)
-	}
 	assert.True(t, azure.ManagedEnvironmentExists(t, environmnetName, resourceGroupName, subscriptionID))
 	assert.True(t, azure.ContainerAppJobExists(t, runnerJobNames["terraform-azurerm-altinn-modules"], resourceGroupName, subscriptionID))
 }
