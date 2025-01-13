@@ -17,7 +17,7 @@ func TestGithubRunnerContainerAppJob(t *testing.T) {
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: ".",
 		Vars: map[string]interface{}{
-			"key":             "NotARealKey",
+			"key": "NotARealKey",
 		},
 	})
 
@@ -35,10 +35,9 @@ func verifyContainerAppResourcesExists(t *testing.T, terraformOptions *terraform
 	var runnerJobNames map[string]string
 	terraform.OutputStruct(t, terraformOptions, "runner_job_names", &runnerJobNames)
 	t.Log("Runner Job Names:")
-	for	k, runnerJobName := range runnerJobNames {
+	for k, runnerJobName := range runnerJobNames {
 		t.Logf("%s: %s", k, runnerJobName)
 	}
 	assert.True(t, azure.ManagedEnvironmentExists(t, environmnetName, resourceGroupName, subscriptionID))
 	assert.True(t, azure.ContainerAppJobExists(t, runnerJobNames["terraform-azurerm-altinn-modules"], resourceGroupName, subscriptionID))
 }
-

@@ -35,12 +35,12 @@ module "github_container_apps_runner" {
   depends_on = [azurerm_resource_group.example]
   source     = "../../modules/github_runner_container_app_jobs"
 
-  app_id = "1234567"
-  app_key   = base64encode(var.key)
+  app_id     = "1234567"
+  app_key    = base64encode(var.key)
   install_id = "1234567"
-  owner = "Altinn"
+  owner      = "Altinn"
   repos = [
-      "terraform-azurerm-altinn-modules"
+    "terraform-azurerm-altinn-modules"
   ]
 
   resource_prefix          = random_string.name.result
@@ -57,7 +57,7 @@ module "github_container_apps_runner" {
   runner_memory           = "1.5Gi"
   runner_image            = "ghcr.io/altinn/altinn-platform/gh-runner:v0.0.1"
   runner_max_running_jobs = "18"
-  runner_labels = "terraform,demo,azure,runner"
+  runner_labels           = "terraform,demo,azure,runner"
 }
 
 variable "key" {
