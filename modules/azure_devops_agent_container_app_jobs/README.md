@@ -73,16 +73,25 @@ Hosts IP will automatically be added to the allow list in the firewall. Remember
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | Additional tags that should be added to all resources. Concated with the default tags | `map(string)` | `{}` | no |
+| <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | Additional tags that should be added to all resources. Concatenated with the default tags | `map(string)` | `{}` | no |
 | <a name="input_agent_cpu"></a> [agent\_cpu](#input\_agent\_cpu) | CPU allocated to a runner | `string` | `"0.5"` | no |
-| <a name="input_agent_image"></a> [agent\_image](#input\_agent\_image) | Docker image to run when a job is scheduled | `string` | `"ghcr.io/tjololo/container-apps-ci-cd-runner-tutorial:latest"` | no |
+| <a name="input_agent_image"></a> [agent\_image](#input\_agent\_image) | Docker image to run when a job is scheduled | `string` | `"ghcr.io/altinn/altinn-platform/azure-devops-agent:v1.0.0"` | no |
 | <a name="input_agent_max_running_jobs"></a> [agent\_max\_running\_jobs](#input\_agent\_max\_running\_jobs) | Maximum number of jobs to run at one time | `string` | `"20"` | no |
 | <a name="input_agent_memory"></a> [agent\_memory](#input\_agent\_memory) | Memory allocated to a runner | `string` | `"1Gi"` | no |
-| <a name="input_agent_pool_name"></a> [agent\_pool\_name](#input\_agent\_pool\_name) | Name of the agent pool in azure devops | `string` | `"demo-azure-containers"` | no |
+| <a name="input_agent_pool_name"></a> [agent\_pool\_name](#input\_agent\_pool\_name) | Name of the agent pool in azure devops | `string` | n/a | yes |
 | <a name="input_azp_org_url"></a> [azp\_org\_url](#input\_azp\_org\_url) | URL for your Azure DevOps organization | `string` | n/a | yes |
 | <a name="input_azp_token"></a> [azp\_token](#input\_azp\_token) | Base64 encoded Azure Devops PAT | `string` | n/a | yes |
 | <a name="input_infrastructure_subnet_id"></a> [infrastructure\_subnet\_id](#input\_infrastructure\_subnet\_id) | The subnet\_id where the container app jobs are running. The Subnet must have a /21 or larger address space. | `string` | n/a | yes |
 | <a name="input_kv_ip_rules"></a> [kv\_ip\_rules](#input\_kv\_ip\_rules) | IPs that will be allowed to access the KV holding the secrets needed by the environment | `set(string)` | `[]` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of the resource group that the resources should be placed in. Check for naming conflicts. | `string` | n/a | yes |
 | <a name="input_resource_prefix"></a> [resource\_prefix](#input\_resource\_prefix) | Prefix for resources | `string` | n/a | yes |
-| <a name="input_runner_labels"></a> [runner\_labels](#input\_runner\_labels) | Additional labels to add to the runner | `string` | `"default"` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_azurerm_container_app_agent_job_name"></a> [azurerm\_container\_app\_agent\_job\_name](#output\_azurerm\_container\_app\_agent\_job\_name) | n/a |
+| <a name="output_azurerm_container_app_environment_name"></a> [azurerm\_container\_app\_environment\_name](#output\_azurerm\_container\_app\_environment\_name) | n/a |
+| <a name="output_azurerm_container_app_placeholder_job_name"></a> [azurerm\_container\_app\_placeholder\_job\_name](#output\_azurerm\_container\_app\_placeholder\_job\_name) | n/a |
+| <a name="output_azurerm_key_vault_id"></a> [azurerm\_key\_vault\_id](#output\_azurerm\_key\_vault\_id) | n/a |
+| <a name="output_azurerm_key_vault_name"></a> [azurerm\_key\_vault\_name](#output\_azurerm\_key\_vault\_name) | n/a |
