@@ -85,3 +85,9 @@ variable "agent_max_running_jobs" {
   default     = "20"
   description = "Maximum number of jobs to run at one time"
 }
+
+variable "agent_replica_timeout" {
+  default     = 7200
+  type        = number
+  description = "The maximum number of seconds a agent replica is allowed to run"
+}

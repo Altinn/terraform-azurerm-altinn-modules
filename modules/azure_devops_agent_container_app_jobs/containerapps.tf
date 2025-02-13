@@ -69,7 +69,7 @@ resource "azurerm_container_app_job" "agent" {
   location                     = data.azurerm_resource_group.agent_rg.location
   resource_group_name          = data.azurerm_resource_group.agent_rg.name
   container_app_environment_id = azurerm_container_app_environment.agent_env.id
-  replica_timeout_in_seconds   = 1800
+  replica_timeout_in_seconds   = var.agent_replica_timeout
   tags                         = local.all_tags
   identity {
     type         = "UserAssigned"

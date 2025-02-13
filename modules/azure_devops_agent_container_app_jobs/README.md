@@ -79,6 +79,7 @@ Hosts IP will automatically be added to the allow list in the firewall. Remember
 | <a name="input_agent_max_running_jobs"></a> [agent\_max\_running\_jobs](#input\_agent\_max\_running\_jobs) | Maximum number of jobs to run at one time | `string` | `"20"` | no |
 | <a name="input_agent_memory"></a> [agent\_memory](#input\_agent\_memory) | Memory allocated to a runner | `string` | `"1Gi"` | no |
 | <a name="input_agent_pool_name"></a> [agent\_pool\_name](#input\_agent\_pool\_name) | Name of the agent pool in azure devops | `string` | n/a | yes |
+| <a name="input_agent_replica_timeout"></a> [agent\_replica\_timeout](#input\_agent\_replica\_timeout) | The maximum number of seconds a agent replica is allowed to run | `number` | `7200` | no |
 | <a name="input_azp_org_url"></a> [azp\_org\_url](#input\_azp\_org\_url) | URL for your Azure DevOps organization | `string` | n/a | yes |
 | <a name="input_azp_token"></a> [azp\_token](#input\_azp\_token) | Base64 encoded Azure Devops PAT | `string` | n/a | yes |
 | <a name="input_infrastructure_subnet_id"></a> [infrastructure\_subnet\_id](#input\_infrastructure\_subnet\_id) | The subnet\_id where the container app jobs are running. The Subnet must have a /21 or larger address space. | `string` | n/a | yes |
