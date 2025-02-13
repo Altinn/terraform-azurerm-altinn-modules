@@ -1,4 +1,4 @@
-name: Run Terratests
+name: Run Terratests Github runner
 
 permissions:
     id-token: write

@@ -1,4 +1,4 @@
-name: Run Terratests
+name: Run Terratests Azure devops agent
 
 permissions:
     id-token: write
