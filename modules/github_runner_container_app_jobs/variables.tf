@@ -105,7 +105,7 @@ variable "runner_labels" {
 }
 
 variable "runner_replica_timeout" {
-  default = 7200
-  type    = number
+  default     = 7200
+  type        = number
   description = "The maximum number of seconds a runner replica is allowed to run"
 }
