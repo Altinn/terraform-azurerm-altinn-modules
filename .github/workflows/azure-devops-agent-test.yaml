@@ -12,6 +12,7 @@ on:
         - 'tests/go.mod'
         - 'tests/go.sum'
         - 'tests/azure_devops_agent_container_app_jobs/**'
+        - 'modules/azure_devops_agent_container_app_jobs/**'
         - '.github/workflows/reusable-execute-submodule-tests.yaml'
         - '.github/workflows/azure-devops-agent-test.yaml'
     pull_request:
@@ -21,6 +22,7 @@ on:
         - 'tests/go.mod'
         - 'tests/go.sum'
         - 'tests/azure_devops_agent_container_app_jobs/**'
+        - 'modules/azure_devops_agent_container_app_jobs/**'
         - '.github/workflows/reusable-execute-submodule-tests.yaml'
         - '.github/workflows/azure-devops-agent-test.yaml'
 
