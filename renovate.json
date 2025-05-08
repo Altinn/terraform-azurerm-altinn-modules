@@ -2,5 +2,25 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>Altinn/renovate-config"
+  ],
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "terraform",
+        "gomod"
+      ],
+      "groupName": "{{manager}} non-major dependencies",
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupSlug": "{{manager}}-minor-patch",
+      "matchPackageNames": [
+        "*"
+      ]
+    }
   ]
 }
