@@ -3,7 +3,7 @@ module github.com/Altinn/terraform-azurerm-altinn-modules
 go 1.23.4
 
 require (
-	github.com/gruntwork-io/terratest v0.49.0
+	github.com/gruntwork-io/terratest v0.50.0
 	github.com/stretchr/testify v1.10.0
 	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397
 )
