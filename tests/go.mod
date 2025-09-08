@@ -4,7 +4,7 @@ go 1.23.4
 
 require (
 	github.com/gruntwork-io/terratest v0.50.0
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	k8s.io/utils v0.0.0-20250820121507-0af2bda4dd1d
 )
 
