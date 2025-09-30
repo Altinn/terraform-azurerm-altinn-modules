@@ -1,6 +1,6 @@
 module github.com/Altinn/terraform-azurerm-altinn-modules
 
-go 1.23.4
+go 1.25.1
 
 require (
 	github.com/gruntwork-io/terratest v0.50.0
