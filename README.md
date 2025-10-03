@@ -15,7 +15,7 @@ Module for deploying a container apps environment with a container app jobs that
 
 These self hosted runners should only be used if strictly necessary as they might pose a security risk.
 
-[Documentation](modules/github_runner_container_apps_job)
+[Documentation](modules/github_runner_container_app_jobs)
 
 ## Contributing
 ### Add a new submodule
