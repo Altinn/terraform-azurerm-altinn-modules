@@ -82,7 +82,7 @@ variable "agent_pool_name" {
 
 variable "agent_max_running_jobs" {
   type        = string
-  default     = "20"
+  default     = "50"
   description = "Maximum number of jobs to run at one time"
 }
 
