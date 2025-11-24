@@ -5,7 +5,7 @@ go 1.25.1
 require (
 	github.com/gruntwork-io/terratest v0.53.0
 	github.com/stretchr/testify v1.11.1
-	k8s.io/utils v0.0.0-20250820121507-0af2bda4dd1d
+	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4
 )
 
 require (
