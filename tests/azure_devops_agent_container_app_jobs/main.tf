@@ -25,6 +25,13 @@ resource "azurerm_subnet" "example" {
   virtual_network_name = azurerm_virtual_network.example.name
   address_prefixes     = ["10.0.0.0/21"]
   service_endpoints    = ["Microsoft.KeyVault"]
+
+  delegation {
+    name = "Microsoft.App.environments"
+    service_delegation {
+      name = "Microsoft.App/environments"
+    }
+  }
 }
 
 module "azure_devops_container-apps-agent" {
