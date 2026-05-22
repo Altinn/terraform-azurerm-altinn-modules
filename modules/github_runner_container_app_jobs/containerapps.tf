@@ -4,6 +4,13 @@ resource "azurerm_container_app_environment" "acaghr_env" {
   resource_group_name      = data.azurerm_resource_group.acaghr_rg.name
   infrastructure_subnet_id = var.infrastructure_subnet_id
   tags                     = local.all_tags
+
+  workload_profile {
+    name                  = "Consumption"
+    workload_profile_type = "Consumption"
+    maximum_count         = 0
+    minimum_count         = 0
+  }
 }
 
 
@@ -14,6 +21,7 @@ resource "azurerm_container_app_job" "acaghr_app_job" {
   resource_group_name          = data.azurerm_resource_group.acaghr_rg.name
   container_app_environment_id = azurerm_container_app_environment.acaghr_env.id
   replica_timeout_in_seconds   = var.runner_replica_timeout
+  workload_profile_name        = "Consumption"
   tags                         = local.all_tags
   identity {
     type         = "UserAssigned"
