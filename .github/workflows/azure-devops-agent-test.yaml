@@ -26,6 +26,10 @@ on:
         - '.github/workflows/reusable-execute-submodule-tests.yaml'
         - '.github/workflows/azure-devops-agent-test.yaml'
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: false
+
 jobs:
     terratest:
         uses: ./.github/workflows/reusable-execute-submodule-tests.yaml
