@@ -21,6 +21,12 @@ resource "azurerm_subnet" "example" {
   service_endpoints    = ["Microsoft.KeyVault"]
 }
 
+resource "azurerm_key_vault_secret" "extra" {
+  name         = "example-extra-secret"
+  value        = "not-a-real-secret"
+  key_vault_id = module.hello-modules_container-apps-agent.azurerm_key_vault_id
+}
+
 module "hello-modules_container-apps-agent" {
   depends_on               = [azurerm_resource_group.example]
   source                   = "Altinn/altinn-modules/azurerm//modules/azure_devops_agent_container_app_jobs"
@@ -30,6 +36,13 @@ module "hello-modules_container-apps-agent" {
   resource_prefix          = "example"
   infrastructure_subnet_id = azurerm_subnet.example.id
   resource_group_name      = azurerm_resource_group.example.name
+
+  agent_env_variables = {
+    HTTP_PROXY = "http://proxy.example.com:3128"
+  }
+  agent_env_secrets = {
+    EXTRA_SECRET = azurerm_key_vault_secret.extra.versionless_id
+  }
 }
 ```
 
@@ -37,26 +50,41 @@ Resources will inherit location from resource group
 
 Hosts IP will automatically be added to the allow list in the firewall. Remember to remove it from the list if desirable.
 
+## Environment variables
+
+`agent_env_variables` and `agent_env_secrets` add environment variables to the agent job. The
+placeholder job is not affected. `AZP_URL`, `AZP_TOKEN` and `AZP_POOL` are set by the module and
+can not be overridden through either input.
+
+`agent_env_secrets` values must be versionless ids of secrets in the key vault created by this
+module. Use the `azurerm_key_vault_id` output to create the secret, and always pass the resource
+attribute (`azurerm_key_vault_secret.example.versionless_id`) rather than a hand built url string.
+The attribute reference is what makes terraform create the secret before the agent job that reads
+it; with a plain string the job can be created first and fail to resolve the reference.
+
+Each environment variable name is lower cased with underscores replaced by dashes to form the
+container app secret name, so `EXTRA_SECRET` is stored as the secret `extra-secret` on the job.
+
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=4.14.0 |
-| <a name="requirement_http"></a> [http](#requirement\_http) | 3.4.5 |
+| <a name="requirement_http"></a> [http](#requirement\_http) | >=3.4.5 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >=3.6.3 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=4.14.0 |
-| <a name="provider_http"></a> [http](#provider\_http) | 3.4.5 |
+| <a name="provider_http"></a> [http](#provider\_http) | >=3.4.5 |
 | <a name="provider_random"></a> [random](#provider\_random) | >=3.6.3 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azurerm_container_app_environment.agent_env](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_environment) | resource |
 | [azurerm_container_app_job.agent](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
 | [azurerm_container_app_job.placeholder_agent](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
@@ -67,14 +95,16 @@ Hosts IP will automatically be added to the allow list in the firewall. Remember
 | [random_string.name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_resource_group.agent_rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
-| [http_http.host_ip](https://registry.terraform.io/providers/hashicorp/http/3.4.5/docs/data-sources/http) | data source |
+| [http_http.host_ip](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | Additional tags that should be added to all resources. Concatenated with the default tags | `map(string)` | `{}` | no |
 | <a name="input_agent_cpu"></a> [agent\_cpu](#input\_agent\_cpu) | CPU allocated to a runner | `string` | `"0.5"` | no |
+| <a name="input_agent_env_secrets"></a> [agent\_env\_secrets](#input\_agent\_env\_secrets) | Additional environment variables for the agent container, read from secrets in the key vault created by this module. Map key is the environment variable name, map value is the versionless id of the key vault secret. Create the secret with the azurerm\_key\_vault\_id output and always pass the resource attribute (azurerm\_key\_vault\_secret.example.versionless\_id) so that terraform creates the secret before the job. | `map(string)` | `{}` | no |
+| <a name="input_agent_env_variables"></a> [agent\_env\_variables](#input\_agent\_env\_variables) | Additional plain text environment variables for the agent container. Map key is the environment variable name, map value is its value. AZP\_URL, AZP\_TOKEN and AZP\_POOL are set by the module and can not be overridden. | `map(string)` | `{}` | no |
 | <a name="input_agent_image"></a> [agent\_image](#input\_agent\_image) | Docker image to run when a job is scheduled | `string` | `"ghcr.io/altinn/altinn-platform/azure-devops-agent:v1.0.0"` | no |
 | <a name="input_agent_max_running_jobs"></a> [agent\_max\_running\_jobs](#input\_agent\_max\_running\_jobs) | Maximum number of jobs to run at one time | `string` | `"20"` | no |
 | <a name="input_agent_memory"></a> [agent\_memory](#input\_agent\_memory) | Memory allocated to a runner | `string` | `"1Gi"` | no |
@@ -90,7 +120,7 @@ Hosts IP will automatically be added to the allow list in the firewall. Remember
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_azurerm_container_app_agent_job_name"></a> [azurerm\_container\_app\_agent\_job\_name](#output\_azurerm\_container\_app\_agent\_job\_name) | n/a |
 | <a name="output_azurerm_container_app_environment_name"></a> [azurerm\_container\_app\_environment\_name](#output\_azurerm\_container\_app\_environment\_name) | n/a |
 | <a name="output_azurerm_container_app_placeholder_job_name"></a> [azurerm\_container\_app\_placeholder\_job\_name](#output\_azurerm\_container\_app\_placeholder\_job\_name) | n/a |
