@@ -56,6 +56,19 @@ module "azure_devops_container-apps-agent" {
   agent_memory           = "1.5Gi"
   agent_image            = "ghcr.io/altinn/altinn-platform/azure-devops-agent:v1.0.0"
   agent_max_running_jobs = "18"
+
+  agent_env_variables = {
+    EXAMPLE_FLAG = "true"
+  }
+  agent_env_secrets = {
+    EXAMPLE_SECRET = azurerm_key_vault_secret.extra.versionless_id
+  }
+}
+
+resource "azurerm_key_vault_secret" "extra" {
+  name         = "${random_string.name.result}-extra"
+  value        = "not-a-real-secret"
+  key_vault_id = module.azure_devops_container-apps-agent.azurerm_key_vault_id
 }
 
 variable "pat" {

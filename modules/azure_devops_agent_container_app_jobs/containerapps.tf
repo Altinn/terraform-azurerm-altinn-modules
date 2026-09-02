@@ -85,6 +85,14 @@ resource "azurerm_container_app_job" "agent" {
     key_vault_secret_id = azurerm_key_vault_secret.azp_org_url.versionless_id
     identity            = azurerm_user_assigned_identity.agent_managed_identity.id
   }
+  dynamic "secret" {
+    for_each = var.agent_env_secrets
+    content {
+      name                = local.agent_env_secret_names[secret.key]
+      key_vault_secret_id = secret.value
+      identity            = azurerm_user_assigned_identity.agent_managed_identity.id
+    }
+  }
   template {
     container {
       image  = var.agent_image
@@ -103,6 +111,33 @@ resource "azurerm_container_app_job" "agent" {
         name  = "AZP_POOL"
         value = var.agent_pool_name
       }
+      dynamic "env" {
+        for_each = var.agent_env_secrets
+        content {
+          name        = env.key
+          secret_name = local.agent_env_secret_names[env.key]
+        }
+      }
+      dynamic "env" {
+        for_each = var.agent_env_variables
+        content {
+          name  = env.key
+          value = env.value
+        }
+      }
+    }
+  }
+
+  lifecycle {
+    precondition {
+      condition = alltrue([
+        for id in values(var.agent_env_secrets) : startswith(id, azurerm_key_vault.agent_vault.vault_uri)
+      ])
+      error_message = "agent_env_secrets must reference secrets in the key vault created by this module. Use the azurerm_key_vault_id output to create the secret and pass its versionless_id."
+    }
+    precondition {
+      condition     = length(setintersection(keys(var.agent_env_variables), keys(var.agent_env_secrets))) == 0
+      error_message = "The same environment variable name can not appear in both agent_env_variables and agent_env_secrets."
     }
   }
 

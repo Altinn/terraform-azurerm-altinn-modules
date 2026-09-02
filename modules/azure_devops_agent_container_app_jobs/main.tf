@@ -6,6 +6,9 @@ locals {
     module = "altinn/altinn-modules/altinn_azure_devops_agent_container_app_jobs"
   }
   all_tags = merge(var.additional_tags, local.default_tags)
+  agent_env_secret_names = {
+    for name in keys(var.agent_env_secrets) : name => lower(replace(name, "_", "-"))
+  }
 }
 
 data "azurerm_resource_group" "agent_rg" {
