@@ -57,3 +57,11 @@ resource "azurerm_key_vault_secret" "azp_org_url" {
   value        = var.azp_org_url
   key_vault_id = azurerm_key_vault.agent_vault.id
 }
+
+resource "azurerm_key_vault_secret" "agent_env" {
+  depends_on   = [azurerm_key_vault.agent_vault]
+  for_each     = local.agent_env_secret_names
+  name         = "${var.resource_prefix}-${each.value}"
+  value        = var.agent_env_secrets[each.key]
+  key_vault_id = azurerm_key_vault.agent_vault.id
+}

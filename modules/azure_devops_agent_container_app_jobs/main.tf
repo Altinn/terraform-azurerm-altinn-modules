@@ -6,8 +6,10 @@ locals {
     module = "altinn/altinn-modules/altinn_azure_devops_agent_container_app_jobs"
   }
   all_tags = merge(var.additional_tags, local.default_tags)
+  # keys() on a sensitive map yields a sensitive value, and sensitive values can not
+  # be used as for_each arguments. The variable names are not secret, only the values.
   agent_env_secret_names = {
-    for name in keys(var.agent_env_secrets) : name => lower(replace(name, "_", "-"))
+    for name in nonsensitive(keys(var.agent_env_secrets)) : name => lower(replace(name, "_", "-"))
   }
 }
 

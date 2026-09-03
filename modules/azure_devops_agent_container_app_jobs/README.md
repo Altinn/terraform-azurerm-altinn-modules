@@ -21,12 +21,6 @@ resource "azurerm_subnet" "example" {
   service_endpoints    = ["Microsoft.KeyVault"]
 }
 
-resource "azurerm_key_vault_secret" "extra" {
-  name         = "example-extra-secret"
-  value        = "not-a-real-secret"
-  key_vault_id = module.hello-modules_container-apps-agent.azurerm_key_vault_id
-}
-
 module "hello-modules_container-apps-agent" {
   depends_on               = [azurerm_resource_group.example]
   source                   = "Altinn/altinn-modules/azurerm//modules/azure_devops_agent_container_app_jobs"
@@ -41,7 +35,7 @@ module "hello-modules_container-apps-agent" {
     HTTP_PROXY = "http://proxy.example.com:3128"
   }
   agent_env_secrets = {
-    EXTRA_SECRET = azurerm_key_vault_secret.extra.versionless_id
+    EXTRA_SECRET = "not-a-real-secret"
   }
 }
 ```
@@ -56,14 +50,40 @@ Hosts IP will automatically be added to the allow list in the firewall. Remember
 placeholder job is not affected. `AZP_URL`, `AZP_TOKEN` and `AZP_POOL` are set by the module and
 can not be overridden through either input.
 
-`agent_env_secrets` values must be versionless ids of secrets in the key vault created by this
-module. Use the `azurerm_key_vault_id` output to create the secret, and always pass the resource
-attribute (`azurerm_key_vault_secret.example.versionless_id`) rather than a hand built url string.
-The attribute reference is what makes terraform create the secret before the agent job that reads
-it; with a plain string the job can be created first and fail to resolve the reference.
+`agent_env_secrets` takes the secret *value*. The module stores it as a secret in the key vault it
+creates, grants its own managed identity read access, and mounts it on the agent job. The caller
+never touches the key vault.
 
 Each environment variable name is lower cased with underscores replaced by dashes to form the
-container app secret name, so `EXTRA_SECRET` is stored as the secret `extra-secret` on the job.
+container app secret name, so `EXTRA_SECRET` is mounted as the secret `extra-secret` on the job and
+stored in the key vault as `<resource_prefix>-extra-secret`.
+
+Values passed through `agent_env_secrets` end up in terraform state, the same as `azp_token`. Treat
+state as sensitive.
+
+### Changed in 1.4.0
+
+In 1.3.0 `agent_env_secrets` took versionless key vault secret ids, expecting the caller to create
+the secret in the vault exposed by the `azurerm_key_vault_id` output. That could not work: a
+`depends_on` on the module block makes every module output depend on every resource in the module,
+so the output depended on the agent job while the job depended on the caller's secret, which
+depended on the output. Terraform rejected it as a dependency cycle.
+
+If you were on 1.3.0, pass the value instead of the id and delete your own
+`azurerm_key_vault_secret` resource:
+
+```terraform
+# 1.3.0
+resource "azurerm_key_vault_secret" "extra" {
+  name         = "example-extra-secret"
+  value        = var.extra_secret
+  key_vault_id = module.agent.azurerm_key_vault_id
+}
+agent_env_secrets = { EXTRA_SECRET = azurerm_key_vault_secret.extra.versionless_id }
+
+# 1.4.0
+agent_env_secrets = { EXTRA_SECRET = var.extra_secret }
+```
 
 ## Requirements
 
@@ -89,6 +109,7 @@ container app secret name, so `EXTRA_SECRET` is stored as the secret `extra-secr
 | [azurerm_container_app_job.agent](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
 | [azurerm_container_app_job.placeholder_agent](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
 | [azurerm_key_vault.agent_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
+| [azurerm_key_vault_secret.agent_env](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.azp_org_url](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_secret.azp_token](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_user_assigned_identity.agent_managed_identity](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
@@ -103,7 +124,7 @@ container app secret name, so `EXTRA_SECRET` is stored as the secret `extra-secr
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | Additional tags that should be added to all resources. Concatenated with the default tags | `map(string)` | `{}` | no |
 | <a name="input_agent_cpu"></a> [agent\_cpu](#input\_agent\_cpu) | CPU allocated to a runner | `string` | `"0.5"` | no |
-| <a name="input_agent_env_secrets"></a> [agent\_env\_secrets](#input\_agent\_env\_secrets) | Additional environment variables for the agent container, read from secrets in the key vault created by this module. Map key is the environment variable name, map value is the versionless id of the key vault secret. Create the secret with the azurerm\_key\_vault\_id output and always pass the resource attribute (azurerm\_key\_vault\_secret.example.versionless\_id) so that terraform creates the secret before the job. | `map(string)` | `{}` | no |
+| <a name="input_agent_env_secrets"></a> [agent\_env\_secrets](#input\_agent\_env\_secrets) | Additional secret environment variables for the agent container. Map key is the environment variable name, map value is the secret value. The module stores each value as a secret in the key vault it creates and mounts it on the agent job. AZP\_URL, AZP\_TOKEN and AZP\_POOL are set by the module and can not be overridden. | `map(string)` | `{}` | no |
 | <a name="input_agent_env_variables"></a> [agent\_env\_variables](#input\_agent\_env\_variables) | Additional plain text environment variables for the agent container. Map key is the environment variable name, map value is its value. AZP\_URL, AZP\_TOKEN and AZP\_POOL are set by the module and can not be overridden. | `map(string)` | `{}` | no |
 | <a name="input_agent_image"></a> [agent\_image](#input\_agent\_image) | Docker image to run when a job is scheduled | `string` | `"ghcr.io/altinn/altinn-platform/azure-devops-agent:v1.0.0"` | no |
 | <a name="input_agent_max_running_jobs"></a> [agent\_max\_running\_jobs](#input\_agent\_max\_running\_jobs) | Maximum number of jobs to run at one time | `string` | `"20"` | no |

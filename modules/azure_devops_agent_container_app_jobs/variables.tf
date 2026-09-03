@@ -117,7 +117,8 @@ variable "agent_env_variables" {
 variable "agent_env_secrets" {
   type        = map(string)
   default     = {}
-  description = "Additional environment variables for the agent container, read from secrets in the key vault created by this module. Map key is the environment variable name, map value is the versionless id of the key vault secret. Create the secret with the azurerm_key_vault_id output and always pass the resource attribute (azurerm_key_vault_secret.example.versionless_id) so that terraform creates the secret before the job."
+  sensitive   = true
+  description = "Additional secret environment variables for the agent container. Map key is the environment variable name, map value is the secret value. The module stores each value as a secret in the key vault it creates and mounts it on the agent job. AZP_URL, AZP_TOKEN and AZP_POOL are set by the module and can not be overridden."
 
   validation {
     condition = alltrue([
@@ -132,13 +133,6 @@ variable "agent_env_secrets" {
   }
 
   validation {
-    condition = alltrue([
-      for id in values(var.agent_env_secrets) : can(regex("^https://[a-z0-9-]+\\.vault\\.[a-z0-9.]+/secrets/[A-Za-z0-9-]+$", id))
-    ])
-    error_message = "agent_env_secrets values must be versionless key vault secret ids, for example https://examplevault.vault.azure.net/secrets/example-secret."
-  }
-
-  validation {
     condition = length(distinct([
       for name in keys(var.agent_env_secrets) : lower(replace(name, "_", "-"))
     ])) == length(var.agent_env_secrets)
@@ -150,5 +144,12 @@ variable "agent_env_secrets" {
       for name in keys(var.agent_env_secrets) : lower(replace(name, "_", "-"))
     ], ["azp-token", "azp-org-url"])) == 0
     error_message = "The container app secret names azp-token and azp-org-url are reserved by the module."
+  }
+
+  validation {
+    condition = alltrue([
+      for name in keys(var.agent_env_secrets) : length(name) <= 100
+    ])
+    error_message = "Environment variable names in agent_env_secrets must be 100 characters or less, since the name is prefixed with resource_prefix to form the key vault secret name."
   }
 }

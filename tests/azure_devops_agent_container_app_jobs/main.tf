@@ -61,14 +61,8 @@ module "azure_devops_container-apps-agent" {
     EXAMPLE_FLAG = "true"
   }
   agent_env_secrets = {
-    EXAMPLE_SECRET = azurerm_key_vault_secret.extra.versionless_id
+    EXAMPLE_SECRET = "not-a-real-secret"
   }
-}
-
-resource "azurerm_key_vault_secret" "extra" {
-  name         = "${random_string.name.result}-extra"
-  value        = "not-a-real-secret"
-  key_vault_id = module.azure_devops_container-apps-agent.azurerm_key_vault_id
 }
 
 variable "pat" {
