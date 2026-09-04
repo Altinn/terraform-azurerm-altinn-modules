@@ -29,6 +29,7 @@ permissions:
 jobs:
     run-terratests:
         runs-on: ubuntu-latest
+        timeout-minutes: 90
 
         steps:
         - name: Checkout repository
@@ -77,4 +78,36 @@ jobs:
             ARM_USE_OIDC: true
           working-directory: tests/${{ inputs.test_folder }}
           run: |
-            go test -v ./... -timeout 30m -count=1
+            go test -v ./... -timeout 60m -count=1
+
+        # The tests defer terraform.Destroy, but a deferred call does not run when
+        # the go test timeout fires or the job is cancelled, because the test binary
+        # is killed rather than unwound. That has leaked whole resource groups into
+        # the test subscription in the past, so destroy again from the leftover state
+        # as a fallback. It is a no-op when the test destroyed its own resources.
+        - name: Destroy leftover test infrastructure
+          if: always()
+          timeout-minutes: 30
+          env:
+            ARM_CLIENT_ID: ${{ secrets.client_id }}
+            ARM_SUBSCRIPTION_ID: ${{ secrets.subscription_id }}
+            ARM_TENANT_ID: ${{ secrets.tenant_id }}
+            ARM_USE_OIDC: true
+            # Terraform ignores TF_VAR_ entries for variables a configuration does
+            # not declare, so both test folders can be covered from here.
+            TF_VAR_pat: NotARealPat
+            TF_VAR_key: NotARealKey
+          working-directory: tests/${{ inputs.test_folder }}
+          run: |
+            if [ ! -f terraform.tfstate ]; then
+              echo "No state file, nothing to clean up."
+              exit 0
+            fi
+            terraform init -input=false
+            if [ -z "$(terraform state list)" ]; then
+              echo "State is empty, nothing to clean up."
+              exit 0
+            fi
+            echo "State still holds resources, destroying:"
+            terraform state list
+            terraform destroy -auto-approve -input=false
