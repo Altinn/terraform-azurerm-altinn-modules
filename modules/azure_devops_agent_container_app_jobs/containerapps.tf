@@ -4,7 +4,10 @@ resource "azurerm_container_app_environment" "agent_env" {
   resource_group_name            = data.azurerm_resource_group.agent_rg.name
   infrastructure_subnet_id       = var.infrastructure_subnet_id
   internal_load_balancer_enabled = var.internal_load_balancer_enabled
-  tags                           = local.all_tags
+  # The provider rejects public_network_access = "Enabled" together with internal
+  # load balancing mode. Left unset otherwise, so Azure keeps picking the value.
+  public_network_access = var.internal_load_balancer_enabled ? "Disabled" : null
+  tags                  = local.all_tags
 }
 
 

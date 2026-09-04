@@ -35,7 +35,7 @@ variable "infrastructure_subnet_id" {
 variable "internal_load_balancer_enabled" {
   type        = bool
   default     = false
-  description = "Run the container app environment in internal load balancing mode, so that it reserves an IP in infrastructure_subnet_id instead of a public one. The agent jobs only make outbound connections, so they do not need a public endpoint. Changing this forces the container app environment, and every job in it, to be recreated."
+  description = "Run the container app environment in internal load balancing mode, so that it reserves an IP in infrastructure_subnet_id instead of a public one. The agent jobs only make outbound connections, so they do not need a public endpoint. Public network access on the environment is disabled in this mode, as required by the provider. Changing this forces the container app environment, and every job in it, to be recreated."
 }
 
 variable "additional_tags" {
