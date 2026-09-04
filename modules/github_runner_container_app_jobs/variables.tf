@@ -32,6 +32,12 @@ variable "infrastructure_subnet_id" {
   description = "The subnet_id where the container app jobs are running. The Subnet must have a /21 or larger address space."
 }
 
+variable "internal_load_balancer_enabled" {
+  type        = bool
+  default     = false
+  description = "Run the container app environment in internal load balancing mode, so that it reserves an IP in infrastructure_subnet_id instead of a public one. The runner jobs only make outbound connections, so they do not need a public endpoint. Changing this forces the container app environment, and every job in it, to be recreated."
+}
+
 variable "additional_tags" {
   type        = map(string)
   description = "Additional tags that should be added to all resources. Concated with the default tags"

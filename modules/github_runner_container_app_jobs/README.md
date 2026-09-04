@@ -80,6 +80,7 @@ Resources will inherit location from resource group
 | <a name="input_app_key"></a> [app\_key](#input\_app\_key) | Base64 encoded Github app private key | `string` | n/a | yes |
 | <a name="input_infrastructure_subnet_id"></a> [infrastructure\_subnet\_id](#input\_infrastructure\_subnet\_id) | The subnet\_id where the container app jobs are running. The Subnet must have a /21 or larger address space. | `string` | n/a | yes |
 | <a name="input_install_id"></a> [install\_id](#input\_install\_id) | Github Installation Id | `string` | n/a | yes |
+| <a name="input_internal_load_balancer_enabled"></a> [internal\_load\_balancer\_enabled](#input\_internal\_load\_balancer\_enabled) | Run the container app environment in internal load balancing mode, so that it reserves an IP in infrastructure\_subnet\_id instead of a public one. The runner jobs only make outbound connections, so they do not need a public endpoint. Changing this forces the container app environment, and every job in it, to be recreated. | `bool` | `false` | no |
 | <a name="input_kv_ip_rules"></a> [kv\_ip\_rules](#input\_kv\_ip\_rules) | IPs that will be allowed to access the KV holding the secrets needed by the environment | `set(string)` | `[]` | no |
 | <a name="input_owner"></a> [owner](#input\_owner) | Github owner or organization | `string` | n/a | yes |
 | <a name="input_repos"></a> [repos](#input\_repos) | Set of repos there should be created a job for running actiosn. Each owner/repo will get it's own azure container app job in the environsment | `set(string)` | n/a | yes |
