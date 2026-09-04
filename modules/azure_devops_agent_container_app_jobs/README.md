@@ -61,7 +61,7 @@ stored in the key vault as `<resource_prefix>-extra-secret`.
 Values passed through `agent_env_secrets` end up in terraform state, the same as `azp_token`. Treat
 state as sensitive.
 
-### Changed in 1.4.0
+### Changed in 2.0.0
 
 In 1.3.0 `agent_env_secrets` took versionless key vault secret ids, expecting the caller to create
 the secret in the vault exposed by the `azurerm_key_vault_id` output. That could not work: a
@@ -81,7 +81,7 @@ resource "azurerm_key_vault_secret" "extra" {
 }
 agent_env_secrets = { EXTRA_SECRET = azurerm_key_vault_secret.extra.versionless_id }
 
-# 1.4.0
+# 2.0.0
 agent_env_secrets = { EXTRA_SECRET = var.extra_secret }
 ```
 
