@@ -18,12 +18,15 @@ resource "azurerm_subnet" "example" {
   resource_group_name  = azurerm_resource_group.example.name
   virtual_network_name = azurerm_virtual_network.example.name
   address_prefixes     = ["10.0.1.0/21"]
-  service_endpoints    = ["Microsoft.KeyVault"]
+
+  service_endpoint {
+    service = "Microsoft.KeyVault"
+  }
 }
 
 module "hello-modules_container-apps-gh-runners" {
   source     = "Altinn/altinn-modules/azurerm//modules/github_runner_container_app_jobs"
-  version    = "1.0.1" #See releases for latest version
+  version    = "2.0.0" #See releases for latest version
   app_id     = "321321321"
   install_id = "123123123"
   app_key    = "PHNlY3JldC1hcHAta2V5Pgo="

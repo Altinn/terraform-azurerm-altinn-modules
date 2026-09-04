@@ -18,12 +18,15 @@ resource "azurerm_subnet" "example" {
   resource_group_name  = azurerm_resource_group.example.name
   virtual_network_name = azurerm_virtual_network.example.name
   address_prefixes     = ["10.0.1.0/21"]
-  service_endpoints    = ["Microsoft.KeyVault"]
+
+  service_endpoint {
+    service = "Microsoft.KeyVault"
+  }
 }
 
 module "hello-modules_container-apps-gh-runners" {
   source     = "Altinn/altinn-modules/azurerm//modules/github_runner_container_app_jobs"
-  version    = "1.0.1" #See releases for latest version
+  version    = "2.0.0" #See releases for latest version
   app_id     = "321321321"
   install_id = "123123123"
   app_key    = "PHNlY3JldC1hcHAta2V5Pgo="
@@ -43,21 +46,21 @@ Resources will inherit location from resource group
 ## Requirements
 
 | Name | Version |
-|------|---------|
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.116.0 |
+| ---- | ------- |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=5.0.0, <6.0.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >=3.6.3 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.116.0 |
+| ---- | ------- |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=5.0.0, <6.0.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | >=3.6.3 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azurerm_container_app_environment.acaghr_env](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_environment) | resource |
 | [azurerm_container_app_job.acaghr_app_job](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
 | [azurerm_key_vault.acaghr_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
@@ -71,7 +74,7 @@ Resources will inherit location from resource group
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | Additional tags that should be added to all resources. Concated with the default tags | `map(string)` | `{}` | no |
 | <a name="input_app_id"></a> [app\_id](#input\_app\_id) | Github App Id | `string` | n/a | yes |
 | <a name="input_app_key"></a> [app\_key](#input\_app\_key) | Base64 encoded Github app private key | `string` | n/a | yes |
@@ -92,7 +95,7 @@ Resources will inherit location from resource group
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_azurerm_container_app_environment_name"></a> [azurerm\_container\_app\_environment\_name](#output\_azurerm\_container\_app\_environment\_name) | n/a |
 | <a name="output_azurerm_container_app_runner_job_names"></a> [azurerm\_container\_app\_runner\_job\_names](#output\_azurerm\_container\_app\_runner\_job\_names) | n/a |
 | <a name="output_azurerm_key_vault_id"></a> [azurerm\_key\_vault\_id](#output\_azurerm\_key\_vault\_id) | n/a |
