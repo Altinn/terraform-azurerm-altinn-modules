@@ -1,9 +1,10 @@
 resource "azurerm_container_app_environment" "acaghr_env" {
-  name                     = "${var.resource_prefix}-${random_string.name.result}-acaghr"
-  location                 = data.azurerm_resource_group.acaghr_rg.location
-  resource_group_name      = data.azurerm_resource_group.acaghr_rg.name
-  infrastructure_subnet_id = var.infrastructure_subnet_id
-  tags                     = local.all_tags
+  name                           = "${var.resource_prefix}-${random_string.name.result}-acaghr"
+  location                       = data.azurerm_resource_group.acaghr_rg.location
+  resource_group_name            = data.azurerm_resource_group.acaghr_rg.name
+  infrastructure_subnet_id       = var.infrastructure_subnet_id
+  internal_load_balancer_enabled = var.internal_load_balancer_enabled
+  tags                           = local.all_tags
 
   workload_profile {
     name                  = "Consumption"

@@ -18,12 +18,15 @@ resource "azurerm_subnet" "example" {
   resource_group_name  = azurerm_resource_group.example.name
   virtual_network_name = azurerm_virtual_network.example.name
   address_prefixes     = ["10.0.1.0/21"]
-  service_endpoints    = ["Microsoft.KeyVault"]
+
+  service_endpoint {
+    service = "Microsoft.KeyVault"
+  }
 }
 
 module "hello-modules_container-apps-gh-runners" {
   source     = "Altinn/altinn-modules/azurerm//modules/github_runner_container_app_jobs"
-  version    = "1.0.1" #See releases for latest version
+  version    = "2.0.0" #See releases for latest version
   app_id     = "321321321"
   install_id = "123123123"
   app_key    = "PHNlY3JldC1hcHAta2V5Pgo="
@@ -43,21 +46,21 @@ Resources will inherit location from resource group
 ## Requirements
 
 | Name | Version |
-|------|---------|
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=3.116.0 |
+| ---- | ------- |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=5.0.0, <6.0.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >=3.6.3 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=3.116.0 |
+| ---- | ------- |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=5.0.0, <6.0.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | >=3.6.3 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azurerm_container_app_environment.acaghr_env](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_environment) | resource |
 | [azurerm_container_app_job.acaghr_app_job](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
 | [azurerm_key_vault.acaghr_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
@@ -71,12 +74,13 @@ Resources will inherit location from resource group
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | Additional tags that should be added to all resources. Concated with the default tags | `map(string)` | `{}` | no |
 | <a name="input_app_id"></a> [app\_id](#input\_app\_id) | Github App Id | `string` | n/a | yes |
 | <a name="input_app_key"></a> [app\_key](#input\_app\_key) | Base64 encoded Github app private key | `string` | n/a | yes |
 | <a name="input_infrastructure_subnet_id"></a> [infrastructure\_subnet\_id](#input\_infrastructure\_subnet\_id) | The subnet\_id where the container app jobs are running. The Subnet must have a /21 or larger address space. | `string` | n/a | yes |
 | <a name="input_install_id"></a> [install\_id](#input\_install\_id) | Github Installation Id | `string` | n/a | yes |
+| <a name="input_internal_load_balancer_enabled"></a> [internal\_load\_balancer\_enabled](#input\_internal\_load\_balancer\_enabled) | Run the container app environment in internal load balancing mode, so that it reserves an IP in infrastructure\_subnet\_id instead of a public one. The runner jobs only make outbound connections, so they do not need a public endpoint. Changing this forces the container app environment, and every job in it, to be recreated. | `bool` | `false` | no |
 | <a name="input_kv_ip_rules"></a> [kv\_ip\_rules](#input\_kv\_ip\_rules) | IPs that will be allowed to access the KV holding the secrets needed by the environment | `set(string)` | `[]` | no |
 | <a name="input_owner"></a> [owner](#input\_owner) | Github owner or organization | `string` | n/a | yes |
 | <a name="input_repos"></a> [repos](#input\_repos) | Set of repos there should be created a job for running actiosn. Each owner/repo will get it's own azure container app job in the environsment | `set(string)` | n/a | yes |
@@ -92,7 +96,7 @@ Resources will inherit location from resource group
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_azurerm_container_app_environment_name"></a> [azurerm\_container\_app\_environment\_name](#output\_azurerm\_container\_app\_environment\_name) | n/a |
 | <a name="output_azurerm_container_app_runner_job_names"></a> [azurerm\_container\_app\_runner\_job\_names](#output\_azurerm\_container\_app\_runner\_job\_names) | n/a |
 | <a name="output_azurerm_key_vault_id"></a> [azurerm\_key\_vault\_id](#output\_azurerm\_key\_vault\_id) | n/a |

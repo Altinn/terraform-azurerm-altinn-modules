@@ -8,6 +8,7 @@ resource "azurerm_key_vault" "agent_vault" {
   sku_name                   = "standard"
   soft_delete_retention_days = 7
   purge_protection_enabled   = false
+  rbac_authorization_enabled = false
   tags                       = local.all_tags
 
 

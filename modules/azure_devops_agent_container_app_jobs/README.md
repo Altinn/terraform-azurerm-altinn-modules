@@ -18,7 +18,10 @@ resource "azurerm_subnet" "example" {
   resource_group_name  = azurerm_resource_group.example.name
   virtual_network_name = azurerm_virtual_network.example.name
   address_prefixes     = ["10.0.0.0/21"]
-  service_endpoints    = ["Microsoft.KeyVault"]
+
+  service_endpoint {
+    service = "Microsoft.KeyVault"
+  }
 }
 
 resource "azurerm_key_vault_secret" "extra" {
@@ -30,7 +33,7 @@ resource "azurerm_key_vault_secret" "extra" {
 module "hello-modules_container-apps-agent" {
   depends_on               = [azurerm_resource_group.example]
   source                   = "Altinn/altinn-modules/azurerm//modules/azure_devops_agent_container_app_jobs"
-  version                  = "1.0.1"
+  version                  = "2.0.0"
   azp_org_url              = "https://dev.azure.com/example"
   azp_token                = "U29Zb3VUb3VnaHRJV2FzSVJlYWxQYXQ/QnV0VGhhdElBaW4ndA=="
   resource_prefix          = "example"
@@ -69,7 +72,7 @@ container app secret name, so `EXTRA_SECRET` is stored as the secret `extra-secr
 
 | Name | Version |
 | ---- | ------- |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=4.14.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=5.0.0, <6.0.0 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | >=3.4.5 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >=3.6.3 |
 
@@ -77,7 +80,7 @@ container app secret name, so `EXTRA_SECRET` is stored as the secret `extra-secr
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=4.14.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=5.0.0, <6.0.0 |
 | <a name="provider_http"></a> [http](#provider\_http) | >=3.4.5 |
 | <a name="provider_random"></a> [random](#provider\_random) | >=3.6.3 |
 
@@ -113,6 +116,7 @@ container app secret name, so `EXTRA_SECRET` is stored as the secret `extra-secr
 | <a name="input_azp_org_url"></a> [azp\_org\_url](#input\_azp\_org\_url) | URL for your Azure DevOps organization | `string` | n/a | yes |
 | <a name="input_azp_token"></a> [azp\_token](#input\_azp\_token) | Base64 encoded Azure Devops PAT | `string` | n/a | yes |
 | <a name="input_infrastructure_subnet_id"></a> [infrastructure\_subnet\_id](#input\_infrastructure\_subnet\_id) | The subnet\_id where the container app jobs are running. The Subnet must have a /21 or larger address space. | `string` | n/a | yes |
+| <a name="input_internal_load_balancer_enabled"></a> [internal\_load\_balancer\_enabled](#input\_internal\_load\_balancer\_enabled) | Run the container app environment in internal load balancing mode, so that it reserves an IP in infrastructure\_subnet\_id instead of a public one. The agent jobs only make outbound connections, so they do not need a public endpoint. Changing this forces the container app environment, and every job in it, to be recreated. | `bool` | `false` | no |
 | <a name="input_kv_ip_rules"></a> [kv\_ip\_rules](#input\_kv\_ip\_rules) | IPs that will be allowed to access the KV holding the secrets needed by the environment | `set(string)` | `[]` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of the resource group that the resources should be placed in. Check for naming conflicts. | `string` | n/a | yes |
 | <a name="input_resource_prefix"></a> [resource\_prefix](#input\_resource\_prefix) | Prefix for resources | `string` | n/a | yes |
