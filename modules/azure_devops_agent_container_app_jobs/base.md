@@ -68,3 +68,8 @@ it; with a plain string the job can be created first and fail to resolve the ref
 Each environment variable name is lower cased with underscores replaced by dashes to form the
 container app secret name, so `EXTRA_SECRET` is stored as the secret `extra-secret` on the job.
 
+## Tags
+
+The tags `costcenter` and `solution` are ignored on every resource the module tags, since they
+are added by Azure Policy. Without this, every plan would remove them and the policy would add
+them back.

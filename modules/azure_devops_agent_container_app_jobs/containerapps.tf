@@ -8,6 +8,12 @@ resource "azurerm_container_app_environment" "agent_env" {
   # load balancing mode. Left unset otherwise, so Azure keeps picking the value.
   public_network_access = var.internal_load_balancer_enabled ? "Disabled" : null
   tags                  = local.all_tags
+
+  # costcenter and solution are added by Azure Policy. Ignore them so plans do not
+  # remove them on every run.
+  lifecycle {
+    ignore_changes = [tags["costcenter"], tags["solution"]]
+  }
 }
 
 
@@ -64,6 +70,12 @@ resource "azurerm_container_app_job" "placeholder_agent" {
   manual_trigger_config {
     parallelism              = 1
     replica_completion_count = 1
+  }
+
+  # costcenter and solution are added by Azure Policy. Ignore them so plans do not
+  # remove them on every run.
+  lifecycle {
+    ignore_changes = [tags["costcenter"], tags["solution"]]
   }
 }
 
@@ -133,6 +145,10 @@ resource "azurerm_container_app_job" "agent" {
   }
 
   lifecycle {
+    # costcenter and solution are added by Azure Policy. Ignore them so plans do not
+    # remove them on every run.
+    ignore_changes = [tags["costcenter"], tags["solution"]]
+
     precondition {
       condition = alltrue([
         for id in values(var.agent_env_secrets) : startswith(id, azurerm_key_vault.agent_vault.vault_uri)

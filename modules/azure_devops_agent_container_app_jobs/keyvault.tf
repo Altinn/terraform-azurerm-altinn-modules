@@ -11,6 +11,11 @@ resource "azurerm_key_vault" "agent_vault" {
   rbac_authorization_enabled = false
   tags                       = local.all_tags
 
+  # costcenter and solution are added by Azure Policy. Ignore them so plans do not
+  # remove them on every run.
+  lifecycle {
+    ignore_changes = [tags["costcenter"], tags["solution"]]
+  }
 
   network_acls {
     bypass         = "None"
