@@ -115,3 +115,23 @@ variable "runner_replica_timeout" {
   type        = number
   description = "The maximum number of seconds a runner replica is allowed to run"
 }
+
+#######################################
+# Scaler tied variables               #
+#######################################
+
+variable "polling_interval_in_seconds" {
+  type        = number
+  default     = 20
+  description = "How often (in seconds) the KEDA github-runner scaler polls the GitHub API for queued jobs. Each poll costs at least 2 API calls per repo against the GitHub App installation rate limit."
+  validation {
+    condition     = var.polling_interval_in_seconds >= 5 && var.polling_interval_in_seconds <= 300
+    error_message = "polling_interval_in_seconds must be between 5 and 300."
+  }
+}
+
+variable "scaler_enable_etags" {
+  type        = bool
+  default     = false
+  description = "Enable conditional requests (ETags) in the KEDA github-runner scaler. Unchanged responses (HTTP 304) do not count against the GitHub API rate limit. When false the enableEtags key is not sent to the scaler at all."
+}

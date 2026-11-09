@@ -68,6 +68,9 @@ module "github_container_apps_runner" {
   runner_image            = "ghcr.io/altinn/altinn-platform/gh-runner:v0.0.1"
   runner_max_running_jobs = "18"
   runner_labels           = "terraform,demo,azure,runner"
+
+  polling_interval_in_seconds = 30
+  scaler_enable_etags         = true
 }
 
 variable "key" {

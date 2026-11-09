@@ -38,6 +38,10 @@ module "hello-modules_container-apps-gh-runners" {
   resource_prefix          = "example"
   infrastructure_subnet_id = azurerm_subnet.example.id
   resource_group_name      = azurerm_resource_group.example.name
+
+  # Optional: reduce GitHub API usage of the KEDA scaler
+  # polling_interval_in_seconds = 30   # default 20
+  # scaler_enable_etags         = true # default false, conditional requests (304s are not rate limited)
 }
 ```
 
