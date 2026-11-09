@@ -38,6 +38,10 @@ module "hello-modules_container-apps-gh-runners" {
   resource_prefix          = "example"
   infrastructure_subnet_id = azurerm_subnet.example.id
   resource_group_name      = azurerm_resource_group.example.name
+
+  # Optional: reduce GitHub API usage of the KEDA scaler
+  # polling_interval_in_seconds = 30   # default 20
+  # scaler_enable_etags         = true # default false, conditional requests (304s are not rate limited)
 }
 ```
 
@@ -83,6 +87,7 @@ Resources will inherit location from resource group
 | <a name="input_internal_load_balancer_enabled"></a> [internal\_load\_balancer\_enabled](#input\_internal\_load\_balancer\_enabled) | Run the container app environment in internal load balancing mode, so that it reserves an IP in infrastructure\_subnet\_id instead of a public one. The runner jobs only make outbound connections, so they do not need a public endpoint. Public network access on the environment is disabled in this mode, as required by the provider. Changing this forces the container app environment, and every job in it, to be recreated. | `bool` | `false` | no |
 | <a name="input_kv_ip_rules"></a> [kv\_ip\_rules](#input\_kv\_ip\_rules) | IPs that will be allowed to access the KV holding the secrets needed by the environment | `set(string)` | `[]` | no |
 | <a name="input_owner"></a> [owner](#input\_owner) | Github owner or organization | `string` | n/a | yes |
+| <a name="input_polling_interval_in_seconds"></a> [polling\_interval\_in\_seconds](#input\_polling\_interval\_in\_seconds) | How often (in seconds) the KEDA github-runner scaler polls the GitHub API for queued jobs. Each poll costs at least 2 API calls per repo against the GitHub App installation rate limit. | `number` | `20` | no |
 | <a name="input_repos"></a> [repos](#input\_repos) | Set of repos there should be created a job for running actiosn. Each owner/repo will get it's own azure container app job in the environsment | `set(string)` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | Name of the resource group that the resources should be placed in. Check for naming conflicts. | `string` | n/a | yes |
 | <a name="input_resource_prefix"></a> [resource\_prefix](#input\_resource\_prefix) | Prefix for resources | `string` | n/a | yes |
@@ -92,6 +97,7 @@ Resources will inherit location from resource group
 | <a name="input_runner_max_running_jobs"></a> [runner\_max\_running\_jobs](#input\_runner\_max\_running\_jobs) | Maximum number of jobs to run at one time | `string` | `"20"` | no |
 | <a name="input_runner_memory"></a> [runner\_memory](#input\_runner\_memory) | Memory allocated to a runner | `string` | `"1Gi"` | no |
 | <a name="input_runner_replica_timeout"></a> [runner\_replica\_timeout](#input\_runner\_replica\_timeout) | The maximum number of seconds a runner replica is allowed to run | `number` | `7200` | no |
+| <a name="input_scaler_enable_etags"></a> [scaler\_enable\_etags](#input\_scaler\_enable\_etags) | Enable conditional requests (ETags) in the KEDA github-runner scaler. Unchanged responses (HTTP 304) do not count against the GitHub API rate limit. When false the enableEtags key is not sent to the scaler at all. | `bool` | `false` | no |
 
 ## Outputs
 

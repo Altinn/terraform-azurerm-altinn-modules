@@ -62,6 +62,10 @@ resource "azurerm_container_app_job" "acaghr_app_job" {
         name  = "LABELS"
         value = var.runner_labels
       }
+      env {
+        name  = "INSTALL_ID"
+        value = var.install_id
+      }
     }
   }
 
@@ -71,19 +75,23 @@ resource "azurerm_container_app_job" "acaghr_app_job" {
     scale {
       min_executions              = 0
       max_executions              = var.runner_max_running_jobs
-      polling_interval_in_seconds = 20
+      polling_interval_in_seconds = var.polling_interval_in_seconds
       rules {
         name             = "github-runner-scaler"
         custom_rule_type = "github-runner"
-        metadata = {
-          applicationID  = var.app_id
-          installationID = var.install_id
-          githubAPIURL   = "https://api.github.com"
-          owner          = var.owner
-          repos          = each.value
-          runnerScope    = "repo"
-          labels         = var.runner_labels
-        }
+        # enableEtags is only added when enabled, never sent as "false".
+        metadata = merge(
+          {
+            applicationID  = var.app_id
+            installationID = var.install_id
+            githubAPIURL   = "https://api.github.com"
+            owner          = var.owner
+            repos          = each.value
+            runnerScope    = "repo"
+            labels         = var.runner_labels
+          },
+          var.scaler_enable_etags ? { enableEtags = "true" } : {}
+        )
         authentication {
           trigger_parameter = "appKey"
           secret_name       = "app-key"
