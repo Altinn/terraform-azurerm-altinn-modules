@@ -19,9 +19,9 @@ resource "azapi_update_resource" "acaghr_identity_settings" {
       configuration = {
         identitySettings = [
           {
-            # Azure returns the id with "resourcegroups" in lower case. Send it
-            # the same way, or every plan shows a change.
-            identity  = replace(azurerm_user_assigned_identity.acaghr_managed_identity.id, "/resourceGroups/", "/resourcegroups/")
+            # Must match the id in the job's identity block exactly (Azure
+            # compares it case-sensitively and silently drops a mismatch).
+            identity  = azurerm_user_assigned_identity.acaghr_managed_identity.id
             lifecycle = "None"
           }
         ]
@@ -33,5 +33,12 @@ resource "azapi_update_resource" "acaghr_identity_settings" {
     # azurerm does not know about identitySettings. Re-apply the setting
     # whenever azurerm changes the job, in case the update drops it.
     replace_triggered_by = [azurerm_container_app_job.acaghr_app_job[each.key]]
+
+    # Azure returns the identity id with "resourcegroups" in lower case, which
+    # would show as a change on every plan. A new identity also changes the
+    # job, which re-creates this resource through replace_triggered_by, so
+    # ignoring the field here does not hide a real change. Drift in lifecycle
+    # is still detected.
+    ignore_changes = [body.properties.configuration.identitySettings[0].identity]
   }
 }
