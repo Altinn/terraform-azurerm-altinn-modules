@@ -19,7 +19,9 @@ resource "azapi_update_resource" "acaghr_identity_settings" {
       configuration = {
         identitySettings = [
           {
-            identity  = azurerm_user_assigned_identity.acaghr_managed_identity.id
+            # Azure returns the id with "resourcegroups" in lower case. Send it
+            # the same way, or every plan shows a change.
+            identity  = replace(azurerm_user_assigned_identity.acaghr_managed_identity.id, "/resourceGroups/", "/resourcegroups/")
             lifecycle = "None"
           }
         ]
