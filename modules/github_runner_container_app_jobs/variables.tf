@@ -135,3 +135,28 @@ variable "scaler_enable_etags" {
   default     = false
   description = "Enable conditional requests (ETags) in the KEDA github-runner scaler. Unchanged responses (HTTP 304) do not count against the GitHub API rate limit. When false the enableEtags key is not sent to the scaler at all."
 }
+
+#######################################
+# Container registry tied variables   #
+#######################################
+
+variable "container_registry" {
+  type = object({
+    id                     = optional(string)
+    create_role_assignment = optional(bool, true)
+  })
+  default     = null
+  description = <<-EOT
+    Pull runner_image from a private Azure Container Registry with the job's managed identity. The registry server and repository are taken from runner_image. Leave null to pull anonymously (for example from ghcr.io).
+    id: resource id of the registry. Required when create_role_assignment is true.
+    create_role_assignment: grant the identity "Container Registry Repository Reader" on the registry, limited with an ABAC condition to the runner_image repository. The registry must use ABAC repository permissions, and the deploying principal must be allowed to create role assignments on it. Set to false to grant access outside the module, using the identity_principal_id output.
+  EOT
+  validation {
+    condition     = var.container_registry == null || !try(var.container_registry.create_role_assignment, true) || try(var.container_registry.id, null) != null
+    error_message = "container_registry.id is required when container_registry.create_role_assignment is true."
+  }
+  validation {
+    condition     = var.container_registry == null || can(regex("^[^/]+\\.[^/]+/[^:@]+", var.runner_image))
+    error_message = "runner_image must include the registry host (for example myacr.azurecr.io/repo/image:tag) when container_registry is set."
+  }
+}

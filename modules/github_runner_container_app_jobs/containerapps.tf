@@ -27,6 +27,11 @@ resource "azurerm_container_app_job" "acaghr_app_job" {
   replica_timeout_in_seconds   = var.runner_replica_timeout
   workload_profile_name        = "Consumption"
   tags                         = local.all_tags
+
+  # The role must exist before the job is created, or the first image pull can
+  # fail while the assignment propagates.
+  depends_on = [azurerm_role_assignment.acaghr_registry_pull]
+
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.acaghr_managed_identity.id]
@@ -35,6 +40,13 @@ resource "azurerm_container_app_job" "acaghr_app_job" {
     name                = "app-key"
     key_vault_secret_id = azurerm_key_vault_secret.acaghr_app_key.versionless_id
     identity            = azurerm_user_assigned_identity.acaghr_managed_identity.id
+  }
+  dynamic "registry" {
+    for_each = local.registry_identity_enabled ? [1] : []
+    content {
+      server   = local.runner_image_server
+      identity = azurerm_user_assigned_identity.acaghr_managed_identity.id
+    }
   }
   template {
     container {
