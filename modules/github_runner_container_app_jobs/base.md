@@ -42,6 +42,12 @@ module "hello-modules_container-apps-gh-runners" {
   # Optional: reduce GitHub API usage of the KEDA scaler
   # polling_interval_in_seconds = 30   # default 20
   # scaler_enable_etags         = true # default false, conditional requests (304s are not rate limited)
+
+  # Optional: pull the runner image from a private ACR with the job's managed identity.
+  # The identity gets read access to the runner_image repository only (requires ABAC
+  # repository permissions on the registry).
+  # runner_image       = "myacr.azurecr.io/altinn-platform/gh-runner:v1.2.3"
+  # container_registry = { id = azurerm_container_registry.example.id }
 }
 ```
 
