@@ -32,7 +32,8 @@ resource "azurerm_subnet" "example" {
   delegation {
     name = "Microsoft.App.environments"
     service_delegation {
-      name = "Microsoft.App/environments"
+      name    = "Microsoft.App/environments"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
     }
   }
 }
@@ -85,6 +86,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "5.4.0"
     }
+    azapi = {
+      source  = "Azure/azapi"
+      version = "2.5.0"
+    }
     random = {
       source  = "hashicorp/random"
       version = "3.9.0"
@@ -98,6 +103,9 @@ terraform {
 
 provider "azurerm" {
   features {}
+}
+
+provider "azapi" {
 }
 
 provider "http" {

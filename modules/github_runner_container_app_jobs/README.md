@@ -57,6 +57,7 @@ Resources will inherit location from resource group
 
 | Name | Version |
 | ---- | ------- |
+| <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) | >=2.0.0, <3.0.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >=5.0.0, <6.0.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >=3.6.3 |
 
@@ -64,6 +65,7 @@ Resources will inherit location from resource group
 
 | Name | Version |
 | ---- | ------- |
+| <a name="provider_azapi"></a> [azapi](#provider\_azapi) | >=2.0.0, <3.0.0 |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >=5.0.0, <6.0.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | >=3.6.3 |
 
@@ -71,6 +73,7 @@ Resources will inherit location from resource group
 
 | Name | Type |
 | ---- | ---- |
+| [azapi_update_resource.acaghr_identity_settings](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/update_resource) | resource |
 | [azurerm_container_app_environment.acaghr_env](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_environment) | resource |
 | [azurerm_container_app_job.acaghr_app_job](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_app_job) | resource |
 | [azurerm_key_vault.acaghr_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
